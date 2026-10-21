@@ -1,0 +1,18 @@
+Hello! Thank you for purchasing my PSX Beach Environment & Props Pack Assets!
+
+I hope they help you achieve that retro-style Beach design you're looking for.
+
+-------------------------
+
+There are two sample scenes for each pipeline (Built-in and URP), where you'll find a showcase of the assets and a demo scene!
+
+You can load the scenes directly, or simply select and drag the prefab models from the "Models" folder into your scene and assign the corresponding material.
+
+-------------------------
+
+[Scripts]
+
+In the demo scenes, the player only has one script for movement and jumping. For jumping to work correctly, you only need to assign a script layer from the player's inspector, for example, "Grounded." In addition to assigning this layer to the script, you must also assign it to the objects/prefabs in the scene that the player can jump on, such as the ground and/or bridges.
+-------------------------
+
+Comments are welcome, and please don't forget to rate it!
