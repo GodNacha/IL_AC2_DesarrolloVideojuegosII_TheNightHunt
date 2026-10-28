@@ -1,54 +1,31 @@
+using UnityEditorInternal;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class RaycastPlayer : MonoBehaviour
 {
-    [Header("Referencias")]
+    [Header("Puntero")]
+    [SerializeField] private Image crosshair;
+    [SerializeField] private float normalSize = 20f;
+    [SerializeField] private float hoverSize = 32f;
+
+    [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private Color hoverColor = Color.yellow;
+
+    [Header("Raycast")]
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private Transform holdPoint;
+    [SerializeField] private float pickupRange = 8f;
+    [SerializeField] private LayerMask pickUpLayer;
 
-    [Header("Configuración")]
-    [SerializeField] private float pickupRange = 3f;
-    [SerializeField] private float moveSpeed = 12f;
-    [SerializeField] private float rotationSpeed = 12f;
-    [SerializeField] private LayerMask pickUpLayer = ~0;
-
-    private TrashObject heldTrash;
-    private Rigidbody heldRigidbody;
-
-    private bool originalUseGravity;
-    private bool originalIsKinematic;
+    private RectTransform crosshairRect;
 
     private void Start()
     {
-        playerCamera = GetComponent<Camera>();
-       
-        holdPoint = GameObject.Find("HoldPoint").GetComponent<Transform>();
+        crosshairRect = crosshair.rectTransform;
+        ResetHover();
     }
 
     private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (heldTrash == null)
-            {
-                TryPickup();
-            }
-            else
-            {
-                Drop();
-            }
-        }
-    }
-
-    private void LateUpdate()
-    {
-        if (heldTrash == null) return;
-
-        MoveHeldObject();
-    }
-
-    private void TryPickup()
     {
         Ray ray = playerCamera.ViewportPointToRay(
             new Vector3(0.5f, 0.5f, 0f)
@@ -61,73 +38,23 @@ public class RaycastPlayer : MonoBehaviour
             pickUpLayer,
             QueryTriggerInteraction.Ignore))
         {
-            TrashObject trash =
-                hit.collider.GetComponentInParent<TrashObject>();
-
-            if (trash == null) return;
-
-            Pickup(trash);
+            FeedbackHover();
         }
-    }
-
-    private void Pickup(TrashObject trash)
-    {
-        heldTrash = trash;
-        heldRigidbody = trash.GetComponent<Rigidbody>();
-
-        if (heldRigidbody != null)
+        else
         {
-            originalUseGravity = heldRigidbody.useGravity;
-            originalIsKinematic = heldRigidbody.isKinematic;
-
-            heldRigidbody.linearVelocity = Vector3.zero;
-            heldRigidbody.angularVelocity = Vector3.zero;
-
-            heldRigidbody.useGravity = false;
-            heldRigidbody.isKinematic = true;
+            ResetHover();
         }
     }
 
-    private void MoveHeldObject()
+    public void FeedbackHover()
     {
-        Transform obj = heldTrash.transform;
-
-        obj.position = Vector3.Lerp(
-            obj.position,
-            holdPoint.position,
-            moveSpeed * Time.deltaTime
-        );
-
-        obj.rotation = Quaternion.Slerp(
-            obj.rotation,
-            holdPoint.rotation,
-            rotationSpeed * Time.deltaTime
-        );
+        crosshairRect.sizeDelta = new Vector2(hoverSize, hoverSize);
+        crosshair.color = hoverColor;
     }
 
-    private void Drop()
+    private void ResetHover()
     {
-        if (heldTrash == null) return;
-
-        if (heldRigidbody != null)
-        {
-            heldRigidbody.useGravity = originalUseGravity;
-            heldRigidbody.isKinematic = originalIsKinematic;
-        }
-
-        heldTrash = null;
-        heldRigidbody = null;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (playerCamera == null) return;
-
-        Gizmos.color = Color.yellow;
-
-        Gizmos.DrawRay(
-            playerCamera.transform.position,
-            playerCamera.transform.forward * pickupRange
-        );
+        crosshairRect.sizeDelta = new Vector2(normalSize, normalSize);
+        crosshair.color = normalColor;
     }
 }

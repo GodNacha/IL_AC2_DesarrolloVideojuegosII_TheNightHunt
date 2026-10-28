@@ -9,9 +9,12 @@ public class GarbageCollector : MonoBehaviour
     {
         TrashObject trash = other.GetComponent<TrashObject>();
 
-        if (trash != null)
+        DragRigidbody dragtrash = other.GetComponent<DragRigidbody>();
+
+        if (trash != null && dragtrash != null)
         {
             trash.Collect();
+            dragtrash.HandleInputEnd(Input.mousePosition);
         }
 
         Debug.Log("Interacción item con basurero");
