@@ -200,7 +200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pistol
   defaultPostion: {fileID: 0}
   ZoomPostion: {fileID: 0}
-  aimSpeed: 15
+  aimSpeed: 21.5
   cameraPosition: {fileID: 0}
   playerCamera: {fileID: 0}
   aimDistance: 100
