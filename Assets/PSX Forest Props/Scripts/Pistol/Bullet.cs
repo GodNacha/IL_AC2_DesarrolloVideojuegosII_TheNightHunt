@@ -1,21 +1,28 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
+    [Header("Bullet Settings")]
     public int damage = 5;
     public float velocity = 20f;
+    public float lifeTime = 5f;
+
+    [Header("Collision Settings")]
+    public float detectionRadius = 0.1f;
+    public LayerMask hitLayers = ~0;
 
     private Rigidbody rb;
-    private Vector3 direction;
+    private bool hasHit;
 
-    public ParticleSystem VFXdestroy;
-
-    public bool hasHit;
+    public ParticleSystem destroyVFX;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+
+        rb.useGravity = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
     }
 
     public void SetDirection(Vector3 direction)
@@ -25,7 +32,7 @@ public class Bullet : MonoBehaviour
             Debug.LogError("La dirección de la bala es cero.");
             return;
         }
-     
+
         rb.linearVelocity = direction.normalized * velocity;
 
         Debug.Log($"Velocidad aplicada: {rb.linearVelocity}");
@@ -33,31 +40,66 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        // rb.linearVelocity = direction * velocity;
+        Destroy(gameObject, lifeTime);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void FixedUpdate()
     {
-        // Aqui puedes aplicar dano al objeto impactado.
-        if (VFXdestroy != null)
+        if (hasHit) return;
+
+        Vector3 movement = rb.linearVelocity * Time.fixedDeltaTime;
+
+        float distance = movement.magnitude;
+
+        if (distance <= 0f) return;
+
+        Vector3 direction = movement.normalized;
+
+        // Comprobar si hay algo en el recorrido de la bala.
+        if (Physics.SphereCast(
+            rb.position,
+            detectionRadius,
+            direction,
+            out RaycastHit hit,
+            distance,
+            hitLayers,
+            QueryTriggerInteraction.Collide))
         {
-            Instantiate(VFXdestroy, transform.position, transform.rotation);
+            HandleImpact(hit.collider);
         }
-
-        Destroy(gameObject);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        // Tambien funciona con colliders configurados como Trigger.
-        Destroy(gameObject);
-    }
-
-    private void Hit()
+    private void HandleImpact(Collider other)
     {
         if (hasHit) return;
 
         hasHit = true;
+
+        // Comprobar si es un objeto especial
+        IShootable shootable = other.GetComponentInParent<IShootable>();
+
+        if (shootable != null)
+        {
+            shootable.OnShot();
+        }
+        else
+        {
+            // Si no es especial, comprobar si recibe daño
+            IDamageable damageable = other.GetComponentInParent<IDamageable>();
+
+            if (damageable != null)
+            {
+                damageable.TakeDamage(damage);
+            }
+        }
+
+        if (destroyVFX != null)
+        {
+            Instantiate(destroyVFX, transform.position, transform.rotation);
+        }
+
         Destroy(gameObject);
     }
 }
+
+

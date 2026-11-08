@@ -91,7 +91,7 @@ public class Pistol : MonoBehaviour
         }
 
         bullets--;
-        currentBulletText.text = bullets.ToString();
+        UpdateAmmoUI();
 
         Instantiate(VFXShoot, VFXSpawn.position, VFXSpawn.rotation);
         SpawnBullet();
@@ -139,6 +139,15 @@ public class Pistol : MonoBehaviour
         }
     }
 
+    public void AddAmmo(int amount)
+    {
+        chargers += amount;
+
+        UpdateAmmoUI();
+
+        Debug.Log("Has conseguido " + amount + " cartucho(s) extra.");
+    }
+
 
     public void StartReload()
     {
@@ -169,11 +178,16 @@ public class Pistol : MonoBehaviour
         yield return new WaitForSeconds(delayReload);
 
         chargers--;
-        currentChargerText.text = chargers.ToString();
         bullets = maxBullets;
-        currentBulletText.text = bullets.ToString();
+        UpdateAmmoUI();
 
         canShoot = true;
         isReloading = false;
+    }
+
+    public void UpdateAmmoUI()
+    {
+        currentBulletText.text = bullets.ToString();
+        currentChargerText.text = chargers.ToString();
     }
 }
