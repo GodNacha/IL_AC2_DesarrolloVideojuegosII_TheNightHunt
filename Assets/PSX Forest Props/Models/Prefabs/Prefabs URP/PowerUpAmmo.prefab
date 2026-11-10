@@ -102,9 +102,9 @@ GameObject:
   - component: {fileID: 1054962393889297665}
   - component: {fileID: 3111574041360828698}
   - component: {fileID: 8627574094486411446}
-  - component: {fileID: 2504969811377629732}
+  - component: {fileID: 5761966323347526224}
   m_Layer: 0
-  m_Name: MAGAZINE3
+  m_Name: PowerUpAmmo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -205,7 +205,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.185237, y: 0.19114535, z: 0.17823781}
   m_Center: {x: 0.0027981598, y: 0.06109333, z: -0.0018708506}
---- !u!114 &2504969811377629732
+--- !u!114 &5761966323347526224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -214,10 +214,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5474802171770264170}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c39c3f3f4f8f3254d984cf9722d7de08, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ad3f551eaf3b9643b04797dd19b037f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AmmoPickup
-  ammoAmount: 1
+  m_EditorClassIdentifier: Assembly-CSharp::PowerUp
+  powerUpType: 2
+  durationDoblePoints: 8
+  durationExtraDamage: 5
 --- !u!1 &7831177031025354856
 GameObject:
   m_ObjectHideFlags: 0

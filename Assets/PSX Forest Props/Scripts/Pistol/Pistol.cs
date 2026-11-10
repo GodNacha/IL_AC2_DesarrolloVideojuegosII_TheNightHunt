@@ -9,15 +9,23 @@ public class Pistol : MonoBehaviour
     public Transform ZoomPostion;
     public float aimSpeed = 12f;
     public Transform cameraPosition;
-    public Camera playerCamera;
     public float aimDistance = 100f;
+
+    [Header("Camera Zoom")]
+    public Camera playerCamera;
+    public float normalFOV = 60f;
+    public float aimFOV = 45f;
+    public float zoomSpeed = 8f;
 
     [Header("Disparo")]
     public GameObject bulletPrefab;
     public Transform bulletSpawn;
+    public int damage = 1;
     public AudioClip sfxShoot;
     public AudioClip sfxReload;
     public AudioSource pistolSource;
+
+    private int baseDamage;
 
     [Header("Efectos")]
     public Transform VFXSpawn;
@@ -38,6 +46,11 @@ public class Pistol : MonoBehaviour
     private bool isAiming;
     private bool isReloading;
 
+    private void Awake()
+    {
+        baseDamage = damage;
+    }
+
     void Start()
     {
         //Se coloca en la posición default
@@ -55,15 +68,32 @@ public class Pistol : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Apuntar con el boton derecho. CAMBIAR CON EL SISTEMA NUEVO DE INPUTS
+        // Apuntar con el botón derecho.
         isAiming = Input.GetMouseButton(1);
 
-        // Mover la pistola hacia la posicion correspondiente.
+        // Mover la pistola hacia la posición correspondiente.
         Transform target = isAiming ? ZoomPostion : defaultPostion;
 
-        transform.position = Vector3.Lerp(transform.position, target.position, aimSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(
+            transform.position,
+            target.position,
+            aimSpeed * Time.deltaTime
+        );
 
-        transform.rotation = Quaternion.Slerp(cameraPosition.rotation, cameraPosition.rotation, aimSpeed * Time.deltaTime);     
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            target.rotation,
+            aimSpeed * Time.deltaTime
+        );
+
+        // Aplicar zoom a la cámara.
+        float targetFOV = isAiming ? aimFOV : normalFOV;
+
+        playerCamera.fieldOfView = Mathf.Lerp(
+            playerCamera.fieldOfView,
+            targetFOV,
+            zoomSpeed * Time.deltaTime
+        );
 
         // Disparar con el boton izquierdo.
         if (Input.GetMouseButtonDown(0))
@@ -129,6 +159,8 @@ public class Pistol : MonoBehaviour
 
         Bullet bulletScript = bullet.GetComponent<Bullet>();
 
+        bulletScript.damage = damage; //Define el daño de la bala
+
         if (bulletScript != null)
         {
             bulletScript.SetDirection(shootDirection);
@@ -189,5 +221,19 @@ public class Pistol : MonoBehaviour
     {
         currentBulletText.text = bullets.ToString();
         currentChargerText.text = chargers.ToString();
+    }
+
+    public void SetExtraDamage(int bonus)
+    {
+        damage = baseDamage + bonus;
+
+        Debug.Log("Daño actual de la pistola: " + damage);
+    }
+
+    public void RemoveExtraDamage()
+    {
+        damage = baseDamage;
+
+        Debug.Log("Daño restaurado: " + damage);
     }
 }

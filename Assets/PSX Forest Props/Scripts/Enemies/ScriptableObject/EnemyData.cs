@@ -9,4 +9,7 @@ public class EnemyData : ScriptableObject
     [Header("Stats")]
     public int maxHealth = 100;
     public float moveSpeed = 3f;
+
+    [Header("Rewards")]
+    public int pointsReward = 100;
 }

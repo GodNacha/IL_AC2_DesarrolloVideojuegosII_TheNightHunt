@@ -140,6 +140,10 @@ MonoBehaviour:
   damage: 1
   velocity: 40
   lifeTime: 4
+  detectionRadius: 0.15
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   destroyVFX: {fileID: 5365990119426665835, guid: 5a6338988ad771249ac69981c5dba6f5, type: 3}
 --- !u!65 &290852232834188195
 BoxCollider:

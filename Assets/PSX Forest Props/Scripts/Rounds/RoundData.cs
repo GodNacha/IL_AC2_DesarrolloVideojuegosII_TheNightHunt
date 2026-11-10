@@ -24,7 +24,7 @@ public class RoundData : ScriptableObject
 
     [Header("Items")]
     public ItemSpawnInfo[] possibleItems;
-    public int maxItems = 2;
+    // public int maxItems = 2;
 
     [Header("Timing")]
     public float spawnInterval = 1f;

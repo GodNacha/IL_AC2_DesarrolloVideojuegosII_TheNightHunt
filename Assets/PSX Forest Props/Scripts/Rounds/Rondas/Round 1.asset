@@ -14,12 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RoundData
   enemies:
   - enemyData: {fileID: 11400000, guid: 1147358bf3efcdd478acf008e693f6b2, type: 2}
-    amount: 2
+    amount: 0
   - enemyData: {fileID: 11400000, guid: 0f49c95255c95b64c9112a611a65881d, type: 2}
-    amount: 1
+    amount: 0
   - enemyData: {fileID: 11400000, guid: d48035b1ba57fff429aab08dd56126e6, type: 2}
-    amount: 1
-  possibleItems: []
-  maxItems: 0
+    amount: 4
+  possibleItems:
+  - itemPrefab: {fileID: 6711738863154263212, guid: 4cc07db2502ac62409badf27a22c2024, type: 3}
+    weight: 0
+  - itemPrefab: {fileID: 6711738863154263212, guid: 717bec8b7f1fa074d845283ed7a55346, type: 3}
+    weight: 0
+  - itemPrefab: {fileID: 6711738863154263212, guid: 54e1a78319007b2418282f784ec869a1, type: 3}
+    weight: 100
   spawnInterval: 2
   timeBeforeNextRound: 2

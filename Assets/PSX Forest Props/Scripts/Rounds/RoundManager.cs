@@ -18,6 +18,9 @@ public class RoundManager : MonoBehaviour
     public float spawnCheckRadius = 1f;
     public LayerMask spawnBlockingLayers;
 
+    [Header("Item Spawner")]
+    public ItemSpawner itemSpawner;
+
     [Header("UI")]
     public TextMeshProUGUI roundText;
     public GameObject roundPanel;
@@ -72,6 +75,8 @@ public class RoundManager : MonoBehaviour
         yield return new WaitForSeconds(delayStartSpawning);
 
         roundInProgress = true;
+
+        itemSpawner.StartSpawning(round);
 
         isSpawning = true;
 
@@ -154,6 +159,9 @@ public class RoundManager : MonoBehaviour
             yield break;
 
         roundInProgress = false;
+
+        // Detener aparición de power-ups y limpiar los existentes.
+        itemSpawner.StopSpawning(true);
 
         Debug.Log("Ronda completada.");
 

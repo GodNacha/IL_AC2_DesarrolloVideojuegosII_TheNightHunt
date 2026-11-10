@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b92ca032836fd4640a09c58c7406d457, type: 3}
   m_Name: NormalEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: EnemigoNormal
+  enemyName: NormalEnemy
   enemyPrefab: {fileID: 1202436034061783661, guid: b437f94ddc9fec544aa075c2313bc00b, type: 3}
   maxHealth: 2
   moveSpeed: 4
+  pointsReward: 100

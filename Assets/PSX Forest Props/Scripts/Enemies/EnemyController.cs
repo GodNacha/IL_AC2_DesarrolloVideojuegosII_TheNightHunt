@@ -6,7 +6,10 @@ public class EnemyController : MonoBehaviour, IDamageable
 {
     private int currentHealth;
     private float moveSpeed;
+    private int pointsReward;
     private Transform player;
+
+    private Rigidbody rb;
 
     public Action<EnemyController> OnEnemyDeath;
 
@@ -21,24 +24,31 @@ public class EnemyController : MonoBehaviour, IDamageable
         currentHealth = data.maxHealth;
         moveSpeed = data.moveSpeed;
         player = playerTarget;
+        pointsReward = data.pointsReward;
     }
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        rb = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (player == null) return;
 
-        Vector3 direction = player.position - transform.position;
+        Vector3 direction = player.position - rb.position;
         direction.y = 0f;
 
         if (direction.sqrMagnitude > 0.01f)
         {
-            transform.rotation = Quaternion.LookRotation(direction);
-            transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+            direction.Normalize();
+
+            rb.MovePosition(
+                rb.position + direction * moveSpeed * Time.fixedDeltaTime
+            );
+
+            rb.MoveRotation(Quaternion.LookRotation(direction));
         }
     }
 
@@ -46,7 +56,9 @@ public class EnemyController : MonoBehaviour, IDamageable
     {
         currentHealth -= damage;
 
-        if (currentHealth == 0)
+        Debug.Log("Daño recibido:" + damage);
+
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -54,6 +66,12 @@ public class EnemyController : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        //Agregar puntos al ScoreManager
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.AddPoints(pointsReward);
+        }
+
         OnEnemyDeath?.Invoke(this);
 
         if (deadSFX != null)
