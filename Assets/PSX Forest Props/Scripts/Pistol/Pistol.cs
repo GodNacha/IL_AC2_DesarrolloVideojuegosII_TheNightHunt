@@ -37,6 +37,9 @@ public class Pistol : MonoBehaviour
     public int chargers = 2;
     public float delayReload = 1.5f;
 
+    [Header("Camera Shake")]
+    public CameraShake cameraShake;
+
     [Header("UI")]
     public TextMeshProUGUI currentBulletText;
     public TextMeshProUGUI currentChargerText;
@@ -49,6 +52,8 @@ public class Pistol : MonoBehaviour
     private void Awake()
     {
         baseDamage = damage;
+
+        cameraShake = FindAnyObjectByType<CameraShake>();
     }
 
     void Start()
@@ -125,6 +130,11 @@ public class Pistol : MonoBehaviour
 
         Instantiate(VFXShoot, VFXSpawn.position, VFXSpawn.rotation);
         SpawnBullet();
+
+        if (cameraShake != null)
+        {
+            cameraShake.ShakePistol();
+        }
 
         pistolSource.PlayOneShot(sfxShoot);
     }

@@ -1,7 +1,7 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public class RoundManager : MonoBehaviour
@@ -17,6 +17,9 @@ public class RoundManager : MonoBehaviour
     public Transform[] spawnPoints;
     public float spawnCheckRadius = 1f;
     public LayerMask spawnBlockingLayers;
+
+    [Header("Spawn Retry")]
+    public float spawnRetryInterval = 1f;
 
     [Header("Item Spawner")]
     public ItemSpawner itemSpawner;
@@ -47,7 +50,7 @@ public class RoundManager : MonoBehaviour
         if (currentRoundIndex == -1)
         {
             StartCoroutine(StartNextRound());
-        }      
+        }
     }
 
     private IEnumerator StartNextRound()
@@ -62,7 +65,6 @@ public class RoundManager : MonoBehaviour
 
         roundPanel.SetActive(true);
 
-        // Actualizar texto de la ronda
         StartCoroutine(ShowRoundText(currentRoundIndex + 1));
 
         RoundData round = rounds[currentRoundIndex];
@@ -70,7 +72,7 @@ public class RoundManager : MonoBehaviour
         Debug.Log("Comenzando ronda " + (currentRoundIndex + 1));
 
         if (cameraShake != null)
-            cameraShake.Shake();
+            cameraShake.ShakeRound();
 
         yield return new WaitForSeconds(delayStartSpawning);
 
@@ -80,43 +82,82 @@ public class RoundManager : MonoBehaviour
 
         isSpawning = true;
 
+        // Crear una lista con todos los enemigos de la ronda.
+        List<EnemyData> enemiesToSpawn = new List<EnemyData>();
+
         foreach (EnemySpawnInfo enemyInfo in round.enemies)
         {
             for (int i = 0; i < enemyInfo.amount; i++)
             {
-                Transform spawn = GetAvailableSpawnPoint();
+                enemiesToSpawn.Add(enemyInfo.enemyData);
+            }
+        }
+
+        // Mezclar aleatoriamente el orden de los enemigos.
+        ShuffleEnemies(enemiesToSpawn);
+
+        // Generar los enemigos en el orden aleatorio.
+        foreach (EnemyData enemyData in enemiesToSpawn)
+        {
+            if (enemyData == null || enemyData.enemyPrefab == null)
+            {
+                Debug.LogError("Hay un EnemyData o prefab sin asignar.");
+                continue;
+            }
+
+            Transform spawn = null;
+
+            // Buscar hasta encontrar un punto libre.
+            while (spawn == null)
+            {
+                spawn = GetAvailableSpawnPoint();
 
                 if (spawn == null)
                 {
-                    Debug.LogWarning("No se encontró un punto de spawn libre.");
-                    continue;
+                    Debug.Log("No hay puntos libres. Reintentando spawn...");
+                    yield return new WaitForSeconds(spawnRetryInterval);
                 }
-
-                GameObject enemyObject = Instantiate(
-                    enemyInfo.enemyData.enemyPrefab,
-                    spawn.position,
-                    spawn.rotation
-                );
-
-                EnemyController enemy =
-                    enemyObject.GetComponent<EnemyController>();
-
-                enemy.Initialize(enemyInfo.enemyData, player);
-
-                enemy.OnEnemyDeath += OnEnemyDeath;
-
-                activeEnemies.Add(enemy);
-                aliveEnemies++;
-
-                yield return new WaitForSeconds(round.spawnInterval);
             }
+
+            // Crear enemigo.
+            GameObject enemyObject = Instantiate(
+                enemyData.enemyPrefab,
+                spawn.position,
+                spawn.rotation
+            );
+
+            EnemyController enemy =
+                enemyObject.GetComponent<EnemyController>();
+
+            enemy.Initialize(enemyData, player);
+
+            enemy.OnEnemyDeath += OnEnemyDeath;
+
+            activeEnemies.Add(enemy);
+            aliveEnemies++;
+
+            // Esperar antes de generar el siguiente enemigo.
+            yield return new WaitForSeconds(round.spawnInterval);
         }
 
         isSpawning = false;
 
-        // Si no se han podido crear enemigos, la ronda termina.
+        // Si todos los enemigos ya murieron, terminar la ronda.
         if (aliveEnemies == 0)
             StartCoroutine(EndRound());
+    }
+
+    private void ShuffleEnemies(List<EnemyData> enemies)
+    {
+        // Algoritmo Fisher-Yates para mezclar la lista.
+        for (int i = enemies.Count - 1; i > 0; i--)
+        {
+            int randomIndex = Random.Range(0, i + 1);
+
+            EnemyData temp = enemies[i];
+            enemies[i] = enemies[randomIndex];
+            enemies[randomIndex] = temp;
+        }
     }
 
     private Transform GetAvailableSpawnPoint()
@@ -125,6 +166,9 @@ public class RoundManager : MonoBehaviour
 
         foreach (Transform point in spawnPoints)
         {
+            if (point == null)
+                continue;
+
             bool blocked = Physics.CheckSphere(
                 point.position,
                 spawnCheckRadius,
@@ -160,7 +204,6 @@ public class RoundManager : MonoBehaviour
 
         roundInProgress = false;
 
-        // Detener aparición de power-ups y limpiar los existentes.
         itemSpawner.StopSpawning(true);
 
         Debug.Log("Ronda completada.");
@@ -176,12 +219,10 @@ public class RoundManager : MonoBehaviour
     {
         roundText.text = "ROUND " + roundNumber;
 
-        // Mostrar texto
         roundPanel.SetActive(true);
 
-        // Mantener visible
-        yield return new WaitForSeconds(timeTextRound);     
+        yield return new WaitForSeconds(timeTextRound);
 
-         roundPanel.SetActive(false);
+        roundPanel.SetActive(false);
     }
 }
