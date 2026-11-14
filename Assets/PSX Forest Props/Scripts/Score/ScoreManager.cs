@@ -11,6 +11,8 @@ public class ScoreManager : MonoBehaviour
 
     [Header("UI")]
     public TMP_Text scoreText;
+    public TMP_Text scoreTextDefeat;
+    public TMP_Text scoreTextWin;
 
     private void Awake()
     {
@@ -42,5 +44,11 @@ public class ScoreManager : MonoBehaviour
     {
         if (scoreText != null)
             scoreText.text = currentScore.ToString();
+    }
+
+    public void TextFinalScore()
+    {
+        scoreTextDefeat.text = "Total Score: " + currentScore.ToString();
+        scoreTextWin.text = "Total Score: " + currentScore.ToString();
     }
 }

@@ -51,6 +51,7 @@ public class Pistol : MonoBehaviour
     private bool isReloading;
 
     private Pause pause;
+    private GameManager gameManager;
 
     private void Awake()
     {
@@ -58,6 +59,7 @@ public class Pistol : MonoBehaviour
 
         cameraShake = FindAnyObjectByType<CameraShake>();
         pause = FindAnyObjectByType<Pause>();
+        gameManager = FindAnyObjectByType<GameManager>();
     }
 
     void Start()
@@ -120,7 +122,7 @@ public class Pistol : MonoBehaviour
 
     public void Shoot()
     {
-        if (!canShoot || isReloading || pause.isPaused)
+        if (!canShoot || isReloading || pause.isPaused || gameManager.gameOver)
             return;
 
         if (bullets <= 0)
@@ -201,7 +203,7 @@ public class Pistol : MonoBehaviour
     {
         if (bullets == maxBullets)
         {
-            Debug.Log("No tienes cargadores disponibles.");
+            Debug.Log("Munición al máximo.");
             return;
         }
        
@@ -211,6 +213,11 @@ public class Pistol : MonoBehaviour
         if (chargers <= 0)
         {
             Debug.Log("No tienes cargadores disponibles.");
+            return;
+        }
+
+        if (!canShoot || gameManager.gameOver)
+        {
             return;
         }
 

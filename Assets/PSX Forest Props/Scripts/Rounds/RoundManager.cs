@@ -40,9 +40,18 @@ public class RoundManager : MonoBehaviour
 
     private bool isSpawning;
 
+    private GameManager gameManager;
+
     private void Start()
     {
         roundPanel.SetActive(false);
+        gameManager = FindAnyObjectByType<GameManager>();
+
+    }
+
+    public void StopAllCoroutinesOnRoad()
+    {
+        StopAllCoroutines();
     }
 
     public void StartGame()

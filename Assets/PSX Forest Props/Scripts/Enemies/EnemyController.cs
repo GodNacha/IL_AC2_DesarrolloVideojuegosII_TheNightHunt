@@ -19,6 +19,8 @@ public class EnemyController : MonoBehaviour, IDamageable
     public AudioClip StepsSFX;
     public AudioClip voiceSFX;
 
+    private GameManager gameManager;
+
     public void Initialize(EnemyData data, Transform playerTarget)
     {
         currentHealth = data.maxHealth;
@@ -31,11 +33,14 @@ public class EnemyController : MonoBehaviour, IDamageable
     {
         audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
+        gameManager = FindAnyObjectByType<GameManager>();
     }
 
     private void FixedUpdate()
     {
         if (player == null) return;
+
+        if (gameManager.gameOver) return;
 
         Vector3 direction = player.position - rb.position;
         direction.y = 0f;
@@ -81,5 +86,13 @@ public class EnemyController : MonoBehaviour, IDamageable
         }
 
         Destroy(gameObject);
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            gameManager.GameOver();
+        }
     }
 }

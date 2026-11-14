@@ -10,15 +10,18 @@ public class Pause : MonoBehaviour
 
     public bool isPaused = false;
 
+    private GameManager game;
+
     private void Start()
     {
         menuPausaUI.SetActive(false);
+        game = FindAnyObjectByType<GameManager>();
     }
 
     private void Update()
     {
         // Detecta si se presiona la tecla Escape (o el botón que prefieras)
-        if (Input.GetKeyDown(pauseKey))
+        if (Input.GetKeyDown(pauseKey) && !game.gameOver)
         {
             if (isPaused)
             {

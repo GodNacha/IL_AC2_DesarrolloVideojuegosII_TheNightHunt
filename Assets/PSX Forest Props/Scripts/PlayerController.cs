@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     private float initialYaw;
     private float initialPitch;
 
+    private GameManager gameManager;
+
     void Start()
     {
         // Guardar la rotacion inicial de la camara.
@@ -37,12 +39,22 @@ public class PlayerController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        gameManager = FindAnyObjectByType<GameManager>();
     }
 
     void Update()
     {
         if (Time.timeScale == 0f)
             return;
+
+        if (gameManager != null)
+        {
+            if (gameManager.gameOver)
+            {
+                return;
+            }
+        }
 
         Look();
     }
