@@ -22,6 +22,7 @@ public class Pistol : MonoBehaviour
     public Transform bulletSpawn;
     public int damage = 1;
     public AudioClip sfxShoot;
+    public AudioClip sfxNoAmmo;
     public AudioClip sfxReload;
     public AudioSource pistolSource;
 
@@ -49,11 +50,14 @@ public class Pistol : MonoBehaviour
     private bool isAiming;
     private bool isReloading;
 
+    private Pause pause;
+
     private void Awake()
     {
         baseDamage = damage;
 
         cameraShake = FindAnyObjectByType<CameraShake>();
+        pause = FindAnyObjectByType<Pause>();
     }
 
     void Start()
@@ -116,12 +120,14 @@ public class Pistol : MonoBehaviour
 
     public void Shoot()
     {
-        if (!canShoot || isReloading)
+        if (!canShoot || isReloading || pause.isPaused)
             return;
 
         if (bullets <= 0)
         {
             Debug.Log("No Ammo, you can't shoot");
+
+            pistolSource.PlayOneShot(sfxNoAmmo);
             return;
         }
 

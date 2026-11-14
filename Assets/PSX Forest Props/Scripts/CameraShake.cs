@@ -42,6 +42,10 @@ public class CameraShake : MonoBehaviour
 
         while (elapsed < duration)
         {
+            // Esperar mientras el juego esté pausado
+            while (Time.timeScale == 0f)
+                yield return null;
+
             float x = Random.Range(-1f, 1f) * magnitude;
             float y = Random.Range(-1f, 1f) * magnitude;
 
@@ -63,6 +67,10 @@ public class CameraShake : MonoBehaviour
 
         while (elapsed < durationPistolShake)
         {
+            // Esperar mientras el juego esté pausado
+            while (Time.timeScale == 0f)
+                yield return null;
+
             float x = Random.Range(-1f, 1f) * magnitudePistolShake;
             float y = Random.Range(-1f, 1f) * magnitudePistolShake;
 
