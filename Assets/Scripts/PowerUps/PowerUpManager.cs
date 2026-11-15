@@ -15,6 +15,12 @@ public class PowerUpManager : MonoBehaviour
     [Header("Extra Damage")]
     public int extraDamageAmount = 2;
 
+    [Header("Audio")]
+    public AudioSource audioPowerUp;
+    public AudioClip sfxDoblePoints;
+    public AudioClip sfxExtraDamage;
+    public AudioClip sfxExtraAmmo;
+
     private Coroutine doublePointsCoroutine;
     private Coroutine extraDamageCoroutine;
 
@@ -31,6 +37,7 @@ public class PowerUpManager : MonoBehaviour
     {
         textDoblePointFeedback.SetActive(false);
         textExtraDamageFeedback.SetActive(false);
+        audioPowerUp = GetComponent<AudioSource>();
     }
 
     // =========================
@@ -49,6 +56,8 @@ public class PowerUpManager : MonoBehaviour
 
     private IEnumerator DoublePointsRoutine(float duration)
     {
+        audioPowerUp.PlayOneShot(sfxDoblePoints);
+
         ScoreManager.Instance.SetDoublePoints(true);
 
         textDoblePointFeedback.SetActive(true); //Mostrar feedback
@@ -82,6 +91,8 @@ public class PowerUpManager : MonoBehaviour
 
     private IEnumerator ExtraDamageRoutine(float duration)
     {
+        audioPowerUp.PlayOneShot(sfxExtraDamage);
+
         pistol.SetExtraDamage(extraDamageAmount);
 
         textExtraDamageFeedback.SetActive(true);
@@ -101,6 +112,8 @@ public class PowerUpManager : MonoBehaviour
 
     public void AddAmmo()
     {
+        audioPowerUp.PlayOneShot(sfxExtraAmmo);
+
         Pistol pistol = FindFirstObjectByType<Pistol>();
 
         if (pistol != null)

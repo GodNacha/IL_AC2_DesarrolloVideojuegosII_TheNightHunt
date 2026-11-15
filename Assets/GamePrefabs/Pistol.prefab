@@ -211,6 +211,7 @@ MonoBehaviour:
   bulletSpawn: {fileID: 886782486024462227}
   damage: 1
   sfxShoot: {fileID: 8300000, guid: f78493d448eb65447b6cca0b787d34c7, type: 3}
+  sfxNoAmmo: {fileID: 8300000, guid: ac391877667092844a8703be70758376, type: 3}
   sfxReload: {fileID: 8300000, guid: 806b9d92fb16e1143b84e77f492efc6d, type: 3}
   pistolSource: {fileID: 0}
   VFXSpawn: {fileID: 4377027054838148843}
@@ -219,6 +220,7 @@ MonoBehaviour:
   maxBullets: 12
   chargers: 3
   delayReload: 1.5
+  cameraShake: {fileID: 0}
   currentBulletText: {fileID: 0}
   currentChargerText: {fileID: 0}
   canShoot: 1

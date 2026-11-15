@@ -1,19 +1,27 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Panels")]
     public CanvasGroup defeatPanel;
     public GameObject winPanel;
 
+    [Header("Gamer Over Settings")]
     public GameObject defeatPanelText;
 
     public bool gameOver = false;
 
     public float fadeGameOver = 1.5f;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip gameOverSFX;
+
     private RoundManager roundManager;
     private ScoreManager score;
+    private PlayerController player;
 
     private void Start()
     {
@@ -22,14 +30,35 @@ public class GameManager : MonoBehaviour
 
         roundManager = FindAnyObjectByType<RoundManager>();
         score = FindAnyObjectByType<ScoreManager>();
+        winPanel.SetActive(false);
+
+        audioSource = GetComponent<AudioSource>();
+        player = FindAnyObjectByType<PlayerController>();
     }
 
     public void GameOver()
     {
         gameOver = true;
+
+        player.canLook = false;
+
+        audioSource.PlayOneShot(gameOverSFX); //Sonido GameOver
+
         StartCoroutine(FadeGameOver());
         roundManager.StopAllCoroutinesOnRoad();
         score.TextFinalScore();
+    }
+
+    public void Win()
+    {
+        gameOver = true;
+
+        winPanel.SetActive(true);
+
+        /*Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        Debug.Log("¡El jugador ha ganado!");*/
     }
 
     IEnumerator FadeGameOver()

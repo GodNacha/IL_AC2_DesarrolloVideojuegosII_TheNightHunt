@@ -12,6 +12,7 @@ public class RoundManager : MonoBehaviour
     [Header("Rounds")]
     public RoundData[] rounds;
     public float delayStartSpawning = 2f;
+    public int ammoNextRound = 2;
 
     [Header("Spawn Points")]
     public Transform[] spawnPoints;
@@ -28,9 +29,16 @@ public class RoundManager : MonoBehaviour
     public TextMeshProUGUI roundText;
     public GameObject roundPanel;
     public float timeTextRound = 3f;
+    public TextMeshPro roundPassText;
 
     [Header("Camera Shake")]
     public CameraShake cameraShake;
+
+    [Header("Audio")]
+    public AudioSource roundSource;
+    public AudioClip startRound;
+    public AudioClip passRound;
+    public AudioClip endAllRounds;
 
     private int currentRoundIndex = -1;
     private int aliveEnemies = 0;
@@ -39,14 +47,20 @@ public class RoundManager : MonoBehaviour
     private readonly List<EnemyController> activeEnemies = new();
 
     private bool isSpawning;
+    private bool isFinalRound;
 
     private GameManager gameManager;
+    private Pistol pistol;
+    private MusicManager musicManager;
 
     private void Start()
     {
         roundPanel.SetActive(false);
         gameManager = FindAnyObjectByType<GameManager>();
-
+        pistol = FindAnyObjectByType<Pistol>();
+        roundPassText.text = null;
+        roundSource = GetComponent<AudioSource>();
+        musicManager = FindAnyObjectByType<MusicManager>();
     }
 
     public void StopAllCoroutinesOnRoad()
@@ -72,9 +86,22 @@ public class RoundManager : MonoBehaviour
             yield break;
         }
 
+        // Detectar si esta es la última ronda.
+        isFinalRound = currentRoundIndex == rounds.Length - 1;
+
         roundPanel.SetActive(true);
 
-        StartCoroutine(ShowRoundText(currentRoundIndex + 1));
+        roundSource.PlayOneShot(startRound); //Sonido de inicio de ronda
+
+        if (isFinalRound)
+        {
+            StartCoroutine(ShowRoundText("FINAL ROUND"));
+            Debug.Log("¡COMIENZA LA RONDA FINAL!");
+        }
+        else
+        {
+            StartCoroutine(ShowRoundText("ROUND " + (currentRoundIndex + 1)));
+        }
 
         RoundData round = rounds[currentRoundIndex];
 
@@ -84,6 +111,8 @@ public class RoundManager : MonoBehaviour
             cameraShake.ShakeRound();
 
         yield return new WaitForSeconds(delayStartSpawning);
+         
+        musicManager.CallFadeOutMusic();  //Colocar aquí el inicio de la música de ronda
 
         roundInProgress = true;
 
@@ -215,18 +244,43 @@ public class RoundManager : MonoBehaviour
 
         itemSpawner.StopSpawning(true);
 
+        musicManager.CallFadeInMusic(); //Fade In música al pasar una ronda, se acaba la música
+
         Debug.Log("Ronda completada.");
 
+        // Comprobar si se ha completado la ronda final.
+        if (isFinalRound)
+        {
+            Debug.Log("¡RONDA FINAL COMPLETADA!");
+
+            roundPassText.text = ("YOU KILL THEM ALL!");
+
+            roundSource.PlayOneShot(endAllRounds); //Sonido de se completaron todas las rondas
+
+            gameManager.Win();
+
+            yield break;
+        }
+
+        roundPassText.text = ("HORDE ANNIHILATED");
+
+        roundSource.PlayOneShot(passRound); //Sonido se completó la ronda
+
+        // Si no es la ronda final, continuar normalmente.
         yield return new WaitForSeconds(
             rounds[currentRoundIndex].timeBeforeNextRound
         );
 
+        roundPassText.text = null;
+
+        pistol.AddAmmo(ammoNextRound);
+
         StartCoroutine(StartNextRound());
     }
 
-    private IEnumerator ShowRoundText(int roundNumber)
+    private IEnumerator ShowRoundText(string message)
     {
-        roundText.text = "ROUND " + roundNumber;
+        roundText.text = message;
 
         roundPanel.SetActive(true);
 

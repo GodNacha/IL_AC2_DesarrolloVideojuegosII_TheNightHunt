@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: NormalEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: NormalEnemy
-  enemyPrefab: {fileID: 1202436034061783661, guid: b437f94ddc9fec544aa075c2313bc00b, type: 3}
+  enemyPrefab: {fileID: 6401703615392655540, guid: 6d0fc42984205944bb79447ee29bd47e, type: 3}
   maxHealth: 2
   moveSpeed: 4
   pointsReward: 100

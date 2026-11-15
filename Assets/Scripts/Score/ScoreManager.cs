@@ -14,6 +14,10 @@ public class ScoreManager : MonoBehaviour
     public TMP_Text scoreTextDefeat;
     public TMP_Text scoreTextWin;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip scoreSfx;
+
     private void Awake()
     {
         Instance = this;
@@ -21,6 +25,7 @@ public class ScoreManager : MonoBehaviour
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         UpdateScoreUI();
     }
 
@@ -29,6 +34,8 @@ public class ScoreManager : MonoBehaviour
         int finalPoints = amount * scoreMultiplier;
 
         currentScore += finalPoints;
+
+        audioSource.PlayOneShot(scoreSfx);
 
         UpdateScoreUI();
 
@@ -43,7 +50,10 @@ public class ScoreManager : MonoBehaviour
     private void UpdateScoreUI()
     {
         if (scoreText != null)
+        {
             scoreText.text = currentScore.ToString();
+        }
+            
     }
 
     public void TextFinalScore()

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class Pause : MonoBehaviour
@@ -10,12 +11,16 @@ public class Pause : MonoBehaviour
 
     public bool isPaused = false;
 
+    public AudioSource audioSource;
+    public AudioClip pauseSfx;
+
     private GameManager game;
 
     private void Start()
     {
         menuPausaUI.SetActive(false);
         game = FindAnyObjectByType<GameManager>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -39,6 +44,7 @@ public class Pause : MonoBehaviour
     {
         isPaused = true;
         menuPausaUI.SetActive(true);
+        audioSource.PlayOneShot(pauseSfx);
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

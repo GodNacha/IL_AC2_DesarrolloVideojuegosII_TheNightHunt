@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     private float initialYaw;
     private float initialPitch;
 
+    public bool canLook = true;
+
     private GameManager gameManager;
 
     void Start()
@@ -48,12 +50,9 @@ public class PlayerController : MonoBehaviour
         if (Time.timeScale == 0f)
             return;
 
-        if (gameManager != null)
+        if (!canLook)
         {
-            if (gameManager.gameOver)
-            {
-                return;
-            }
+            return;
         }
 
         Look();

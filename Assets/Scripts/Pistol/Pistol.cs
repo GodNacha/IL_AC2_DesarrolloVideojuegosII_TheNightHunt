@@ -44,10 +44,12 @@ public class Pistol : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI currentBulletText;
     public TextMeshProUGUI currentChargerText;
+    public GameObject puntero;
 
     public bool canShoot;
 
     private bool isAiming;
+    private bool previousAiming = false;
     private bool isReloading;
 
     private Pause pause;
@@ -60,6 +62,7 @@ public class Pistol : MonoBehaviour
         cameraShake = FindAnyObjectByType<CameraShake>();
         pause = FindAnyObjectByType<Pause>();
         gameManager = FindAnyObjectByType<GameManager>();
+        puntero = GameObject.Find("Puntero");
     }
 
     void Start()
@@ -81,6 +84,13 @@ public class Pistol : MonoBehaviour
     {
         // Apuntar con el botón derecho.
         isAiming = Input.GetMouseButton(1);
+
+        // Detectar cambios en el estado de apuntado.
+        if (isAiming != previousAiming)
+        {
+            puntero.SetActive(!isAiming);
+            previousAiming = isAiming;
+        }
 
         // Mover la pistola hacia la posición correspondiente.
         Transform target = isAiming ? ZoomPostion : defaultPostion;

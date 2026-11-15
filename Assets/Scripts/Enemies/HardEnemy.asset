@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HardEnemy
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: HardEnemy
-  enemyPrefab: {fileID: 1202436034061783661, guid: 67b64c82b82c47842af5f314d9955d20, type: 3}
+  enemyPrefab: {fileID: 6631881892268801253, guid: 656894ad28a0c974b8fc17d024d59212, type: 3}
   maxHealth: 4
   moveSpeed: 2.5
   pointsReward: 250
