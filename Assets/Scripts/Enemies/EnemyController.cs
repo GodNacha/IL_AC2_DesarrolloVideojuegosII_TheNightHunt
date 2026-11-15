@@ -121,6 +121,7 @@ public class EnemyController : MonoBehaviour, IDamageable
     {
         invulnerable = true;
 
+        audioSource.loop = false;
         audioSource.Pause(); //Ver si esto es un problema
 
         //Agregar puntos al ScoreManager

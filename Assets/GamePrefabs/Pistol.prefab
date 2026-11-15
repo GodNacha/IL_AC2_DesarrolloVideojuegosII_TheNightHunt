@@ -218,11 +218,12 @@ MonoBehaviour:
   VFXShoot: {fileID: 5365990119426665835, guid: 5a6338988ad771249ac69981c5dba6f5, type: 3}
   bullets: 12
   maxBullets: 12
-  chargers: 3
-  delayReload: 1.5
+  chargers: 1
+  delayReload: 1.4
   cameraShake: {fileID: 0}
   currentBulletText: {fileID: 0}
   currentChargerText: {fileID: 0}
+  puntero: {fileID: 0}
   canShoot: 1
 --- !u!1 &7832722017997480864
 GameObject:

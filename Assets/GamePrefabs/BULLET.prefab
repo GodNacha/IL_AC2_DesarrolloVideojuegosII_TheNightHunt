@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   damage: 1
-  velocity: 40
+  velocity: 50
   lifeTime: 4
   detectionRadius: 0.15
   hitLayers:

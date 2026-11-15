@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     [Header("Panels")]
     public CanvasGroup defeatPanel;
-    public GameObject winPanel;
+    public GameObject winCanvas;
 
     [Header("Gamer Over Settings")]
     public GameObject defeatPanelText;
@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private RoundManager roundManager;
     private ScoreManager score;
     private PlayerController player;
+    private Pistol pistol;
 
     private void Start()
     {
@@ -30,10 +31,11 @@ public class GameManager : MonoBehaviour
 
         roundManager = FindAnyObjectByType<RoundManager>();
         score = FindAnyObjectByType<ScoreManager>();
-        winPanel.SetActive(false);
+        winCanvas.SetActive(false);
 
         audioSource = GetComponent<AudioSource>();
         player = FindAnyObjectByType<PlayerController>();
+        pistol = FindAnyObjectByType<Pistol>();
     }
 
     public void GameOver()
@@ -52,13 +54,8 @@ public class GameManager : MonoBehaviour
     public void Win()
     {
         gameOver = true;
-
-        winPanel.SetActive(true);
-
-        /*Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
-        Debug.Log("¡El jugador ha ganado!");*/
+        pistol.ChangePistolUse();
+        StartCoroutine(FadeWin());
     }
 
     IEnumerator FadeGameOver()
@@ -86,5 +83,13 @@ public class GameManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    IEnumerator FadeWin()
+    {
+        yield return new WaitForSeconds(2f);
+        score.TextFinalScore();
+        winCanvas.SetActive(true);
+
     }
 }

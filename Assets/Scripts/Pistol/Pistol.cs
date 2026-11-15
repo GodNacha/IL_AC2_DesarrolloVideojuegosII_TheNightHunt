@@ -54,6 +54,7 @@ public class Pistol : MonoBehaviour
 
     private Pause pause;
     private GameManager gameManager;
+    private MenuPistol menuPistol;
 
     private void Awake()
     {
@@ -63,6 +64,9 @@ public class Pistol : MonoBehaviour
         pause = FindAnyObjectByType<Pause>();
         gameManager = FindAnyObjectByType<GameManager>();
         puntero = GameObject.Find("Puntero");
+        menuPistol = GetComponent<MenuPistol>();
+
+        menuPistol.enabled = false;
     }
 
     void Start()
@@ -268,5 +272,11 @@ public class Pistol : MonoBehaviour
         damage = baseDamage;
 
         Debug.Log("Daño restaurado: " + damage);
+    }
+
+    public void ChangePistolUse()
+    {
+        menuPistol.enabled = true;
+        this.enabled = false;
     }
 }
