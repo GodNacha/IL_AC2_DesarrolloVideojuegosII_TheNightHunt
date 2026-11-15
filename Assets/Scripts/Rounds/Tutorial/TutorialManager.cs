@@ -21,14 +21,18 @@ public class TutorialManager : MonoBehaviour
     public GameObject startGameText;
 
     [Header("Start")]
-    public int addAmmoStart = 1;
+    public int ammoStart = 1;
 
     private MusicManager music;
     private Pistol pistol;
 
+    public bool onTutorial = true;
+
     private void Awake()
     {
         Instance = this;
+
+        onTutorial = true;
 
         music = FindAnyObjectByType<MusicManager>();
         pistol = FindAnyObjectByType<Pistol>();
@@ -44,6 +48,14 @@ public class TutorialManager : MonoBehaviour
         dianas.SetActive(false);
 
         StartCoroutine(delayStart());
+    }
+
+    public void Update()
+    {
+        if (pistol.chargers == 0 && onTutorial)
+        {
+            pistol.AddAmmo(1);
+        }
     }
 
     public void TargetDestroyed()
@@ -66,6 +78,8 @@ public class TutorialManager : MonoBehaviour
         {
             Debug.Log("¡Tutorial completado!");
 
+            onTutorial = false;
+
             music.ChangeMusic();
 
             StartCoroutine(delayStartText());
@@ -77,11 +91,18 @@ public class TutorialManager : MonoBehaviour
         controlText.SetActive(false);
         task2Text.SetActive(false);
         startGameText.SetActive(true);
+
         yield return new WaitForSeconds(2f);
+
         startGameText.SetActive(false);
+        //Se retesean las balas de la pistola
+        pistol.bullets = 12;
+        pistol.chargers = ammoStart;
+
+        pistol.UpdateAmmoUI();
+
         roundManager.StartGame();
 
-        pistol.AddAmmo(addAmmoStart);
     }
 
     IEnumerator delayStart()

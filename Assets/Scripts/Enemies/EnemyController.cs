@@ -39,6 +39,8 @@ public class EnemyController : MonoBehaviour, IDamageable
     private Animator anim;
     private bool invulnerable = false;
 
+    private Collider col;
+
     private bool stopSFX = false;
 
     public void Initialize(EnemyData data, Transform playerTarget)
@@ -55,6 +57,7 @@ public class EnemyController : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
         gameManager = FindAnyObjectByType<GameManager>();
         anim = GetComponent<Animator>();
+        col = GetComponent<Collider>();
         stopSFX = false;
     }
 
@@ -120,6 +123,8 @@ public class EnemyController : MonoBehaviour, IDamageable
     private void Die()
     {
         invulnerable = true;
+
+        col.enabled = false;
 
         audioSource.loop = false;
         audioSource.Pause(); //Ver si esto es un problema

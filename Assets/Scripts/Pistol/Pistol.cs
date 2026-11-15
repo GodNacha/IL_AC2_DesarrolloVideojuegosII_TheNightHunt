@@ -125,14 +125,13 @@ public class Pistol : MonoBehaviour
         {
             Shoot();
         }
-
+        
         // Recargar con R.
         if (Input.GetKeyDown(KeyCode.R))
         {
             StartReload();
         }
-    }
-
+    } 
 
     public void Shoot()
     {
